@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Default'  // Use 'Default' if that's the name of the Maven installation in Jenkins
+    }
+
+    environment {
+        PATH = "${tool 'Default'}/bin;${env.PATH}"
+    }
+
+    parameters {
+        string(name: 'driversPath', defaultValue: 'C:\\Users\\ninad\\Downloads\\PATH_TO_WEB_DRIVERS', description: 'Path to the browser drivers')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ninad1710/EXP-07.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('selenium-tests') {
+                    bat "mvn clean package -DdriversPath=%driversPath%"
+                }
+            }
+        }
+    }
+}
